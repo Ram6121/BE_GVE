@@ -6,6 +6,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2/promise');
+const { resolveMySqlHost } = require('../src/mysqlHost');
 
 function resolveDatabaseName() {
   const name = process.env.DB_NAME || process.env.DB_DATABASE;
@@ -32,8 +33,9 @@ async function main() {
 
   const database = resolveDatabaseName();
 
+  const host = resolveMySqlHost(process.env.DB_HOST);
   const conn = await mysql.createConnection({
-    host: process.env.DB_HOST,
+    host,
     port: Number(process.env.DB_PORT) || 3306,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
@@ -41,7 +43,7 @@ async function main() {
     multipleStatements: true,
   });
 
-  console.log(`Connected to ${database}@${process.env.DB_HOST}`);
+  console.log(`Connected to ${database}@${host}`);
 
   try {
     for (const file of files) {

@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+const { resolveMySqlHost } = require('./mysqlHost');
 require('dotenv').config();
 
 // Hostinger / Laravel often use DB_DATABASE; local examples use DB_NAME.
@@ -10,7 +11,7 @@ if (!database || String(database).trim() === '') {
 }
 
 const basePool = mysql.createPool({
-  host: process.env.DB_HOST,
+  host: resolveMySqlHost(process.env.DB_HOST),
   port: Number(process.env.DB_PORT) || 3306,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
