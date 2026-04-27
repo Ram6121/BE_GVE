@@ -82,6 +82,45 @@ module.exports = {
         },
       },
     },
+    '/api/health/db': {
+      get: {
+        tags: ['Health'],
+        summary: 'Database connectivity check',
+        description: 'Runs `SELECT 1` through the app connection pool. Use for monitoring or confirming MySQL is reachable.',
+        responses: {
+          200: {
+            description: 'MySQL is reachable',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: { type: 'string', example: 'ok' },
+                    database: { type: 'string', example: 'connected' },
+                    latencyMs: { type: 'integer' },
+                  },
+                },
+              },
+            },
+          },
+          503: {
+            description: 'Database unavailable',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: { type: 'string', example: 'error' },
+                    database: { type: 'string', example: 'unavailable' },
+                    message: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
     '/api/auth/login': {
       post: {
         tags: ['Auth'],

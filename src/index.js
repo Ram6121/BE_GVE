@@ -4,6 +4,7 @@ const cors       = require('cors');
 const helmet     = require('helmet');
 const swaggerUi  = require('swagger-ui-express');
 const swaggerSpec = require('./swagger-spec');
+const pool = require('./db');
 
 const app = express();
 
@@ -23,6 +24,25 @@ app.use('/api/gate',    require('./routes/gate'));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', system: 'GEV ICMS', version: '1.0' });
+});
+
+app.get('/api/health/db', async (req, res) => {
+  const started = Date.now();
+  try {
+    await pool.query('SELECT 1 AS ok');
+    res.json({
+      status: 'ok',
+      database: 'connected',
+      latencyMs: Date.now() - started,
+    });
+  } catch (err) {
+    console.error('Database health check failed', err);
+    res.status(503).json({
+      status: 'error',
+      database: 'unavailable',
+      message: err.message,
+    });
+  }
 });
 
 app.use((req, res) => {
