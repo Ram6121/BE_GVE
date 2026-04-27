@@ -51,7 +51,8 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3000;
 const base = process.env.APP_BASE_URL || `http://localhost:${PORT}`;
-app.listen(PORT, () => {
-  console.log(`GEV ICMS API running on port ${PORT}`);
+const HOST = process.env.HOST || '0.0.0.0';
+app.listen(PORT, HOST, () => {
+  console.log(`GEV ICMS API listening on ${HOST}:${PORT}`);
   console.log(`Swagger UI: ${base.replace(/\/$/, '')}/api-docs  (alias: /swagger)`);
 });
